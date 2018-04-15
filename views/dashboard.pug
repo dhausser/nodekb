@@ -1,0 +1,116 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description', content='')
+    meta(name='author', content='')
+    link(rel='icon', href='../../../../favicon.ico')
+    title Dashboard Template for Bootstrap
+    // Bootstrap core CSS
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css', integrity='sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4', crossorigin='anonymous')
+    // Custom styles for this template
+    link(href='/css/dashboard.css', rel='stylesheet')
+  body
+    nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow
+      a.navbar-brand.col-sm-3.col-md-2.mr-0(href='/') Company name
+      input.form-control.form-control-dark.w-100(type='text', placeholder='Search', aria-label='Search')
+      ul.navbar-nav.px-3
+        li.nav-item.text-nowrap
+          a.nav-link(href='#') Sign out
+    .container-fluid
+      .row
+        nav.col-md-2.d-none.d-md-block.bg-light.sidebar
+          .sidebar-sticky
+            ul.nav.flex-column
+              li.nav-item
+                a.nav-link.active(href='/dashboard')
+                  span(data-feather='home')
+                  |Dashboard
+                  span.sr-only (current)
+              li.nav-item
+                a.nav-link(href='/articles/add')
+                  span(data-feather='file')
+                  |Orders
+              li.nav-item
+                a.nav-link(href='#')
+                  span(data-feather='shopping-cart')
+                  |Products
+              li.nav-item
+                a.nav-link(href='#')
+                  span(data-feather='users')
+                  |Customers
+              li.nav-item
+                a.nav-link(href='#')
+                  span(data-feather='bar-chart-2')
+                  |Reports
+              li.nav-item
+                a.nav-link(href='#')
+                  span(data-feather='layers')
+                  |Integrations
+            h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
+              span Saved reports
+              a.d-flex.align-items-center.text-muted(href='#')
+                span(data-feather='plus-circle')
+            ul.nav.flex-column.mb-2
+              li.nav-item
+                a.nav-link(href='#')
+                  span(data-feather='file-text')
+                  |                   Current month
+              li.nav-item
+                a.nav-link(href='#')
+                  span(data-feather='file-text')
+                  |                   Last quarter
+              li.nav-item
+                a.nav-link(href='#')
+                  span(data-feather='file-text')
+                  |                   Social engagement
+              li.nav-item
+                a.nav-link(href='#')
+                  span(data-feather='file-text')
+                  |                   Year-end sale
+        main.col-md-9.ml-sm-auto.col-lg-10.px-4(role='main')
+          .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
+            h1.h2 Dashboard
+            .btn-toolbar.mb-2.mb-md-0
+              .btn-group.mr-2
+                button.btn.btn-sm.btn-outline-secondary Share
+                button.btn.btn-sm.btn-outline-secondary Export
+              button.btn.btn-sm.btn-outline-secondary.dropdown-toggle
+                span(data-feather='calendar')
+                |                 This week
+          canvas#myChart.my-4.w-100(width='900', height='380')
+          h2 Section title
+          .table-responsive
+            table.table.table-striped.table-sm
+              thead
+                tr
+                  th Title
+                  th Author
+                  th Body
+              tbody
+                each article, i in articles
+                  tr
+                    td
+                      a(href="/article/"+article._id)= article.title
+                    td= article.author
+                    td= article.body
+
+    //
+      Bootstrap core JavaScript
+      ==================================================
+    // Placed at the end of the document so the pages load faster
+    script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous")
+    script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous")
+    script.
+      window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')
+    
+    // Icons
+    script(src='https://unpkg.com/feather-icons/dist/feather.min.js')
+    script.
+      feather.replace()
+    
+    // Graphs
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js')
+    script(type="text/javascript", src='/js/chart.js')
