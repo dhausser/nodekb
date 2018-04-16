@@ -6,6 +6,14 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('passport')
 const config = require('./config/database')
+const JiraApi = require('jira-client')
+
+const jira = new JiraApi({
+  protocol: 'https',
+  host: 'jira.atlassian.com',
+  apiVersion: '2',
+  strictSSL: true
+})
 
 mongoose.connect('mongodb://localhost/nodekb')
 let db = mongoose.connection
@@ -65,11 +73,23 @@ app.get('/', (req, res) => {
 })
 
 // Dashboard Route
-app.get('/dashboard', (req, res) =>
-  Article.find({}, (err, articles) =>{
-    if (err) console.log(err)
-    else res.render('dashboard', { articles: articles })
-  }))
+app.get('/dashboard', async (req, res, next) => {
+
+  try {
+    const result = await jira.searchJira('project=JRASERVER', {
+      startAt: '0',
+      maxResults: '5'
+    })
+
+    for (issue of result.issues) console.log(issue.key)
+
+    res.render('dashboard', { issues: result.issues })
+
+  } catch (err) {
+    next(err)
+  }
+
+})
 
 // Route filter
 app.use('/articles', require('./routes/articles'))

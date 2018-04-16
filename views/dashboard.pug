@@ -85,16 +85,15 @@ html(lang='en')
             table.table.table-striped.table-sm
               thead
                 tr
-                  th Title
-                  th Author
-                  th Body
+                  th Key
+                  th Summary
               tbody
-                each article, i in articles
+                each issue, i in issues
                   tr
                     td
-                      a(href="/article/"+article._id)= article.title
-                    td= article.author
-                    td= article.body
+                      //- a(href="/article/"+article._id)= article.title
+                      a(href="#")= issue.key
+                    td= issue.fields.summary
 
     //
       Bootstrap core JavaScript

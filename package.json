@@ -17,9 +17,20 @@
     "express-messages": "^1.0.1",
     "express-session": "^1.15.6",
     "express-validator": "^5.1.2",
+    "jira-client": "^6.4.1",
     "mongoose": "^5.0.14",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "pug": "^2.0.3"
-  }
+    "pug": "^2.0.3",
+    "request": "^2.85.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dhausser/nodekb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dhausser/nodekb/issues"
+  },
+  "homepage": "https://github.com/dhausser/nodekb#readme"
 }

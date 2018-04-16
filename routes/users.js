@@ -50,12 +50,22 @@ router.post('/register', [
 router.get('/login', (req, res) => res.render('login'))
 
 // Login Process
-router.post('/login', (req, res, next) => {
-  passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/users/login',
-    failureFlash: true
-  })(req, res, next)
+router.post('/login', [
+  body('username', 'Username is required').not().isEmpty(),
+  body('password', 'Password is required').isLength({ min: 5 }).matches(/\d/)
+], (req, res, next) => {
+
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    res.render('login', { errors: errors.mapped() })
+  } else {
+    passport.authenticate('local', {
+      successRedirect: '/',
+      failureRedirect: '/users/login',
+      failureFlash: true
+    })(req, res, next)
+  }
 })
 
 // logout
