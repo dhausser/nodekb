@@ -17,7 +17,7 @@ html(lang='en')
       input.form-control.form-control-light.w-100(type='text', placeholder='Search', aria-label='Search')
       ul.navbar-nav.px-3
         li.nav-item.text-nowrap
-          a.nav-link(href='#') Sign out
+          a.nav-link(href='/users/logout') Sign out
     .container-fluid
       .row
         nav.col-md-2.d-none.d-md-block.bg-light.sidebar
@@ -80,20 +80,25 @@ html(lang='en')
                 span(data-feather='calendar')
                 |                 This week
           canvas#myChart.my-4.w-100(width='900', height='380')
-          h2 Section title
+          h2 Report
           .table-responsive
-            table.table.table-striped.table-sm
+            table.table.table-sm.table-borderless.table-hover
               thead
                 tr
                   th Key
                   th Summary
+                  th Original
+                  th Spent
+                  th Remaining
               tbody
                 each issue, i in issues
                   tr
                     td
-                      //- a(href="/article/"+article._id)= article.title
                       a(href="#")= issue.key
                     td= issue.fields.summary
+                    td= issue.fields.timeoriginalestimate
+                    td= issue.fields.timespent
+                    td= issue.fields.timeestimate
 
     //
       Bootstrap core JavaScript

@@ -7,6 +7,7 @@ const session = require('express-session')
 const passport = require('passport')
 const config = require('./config/database')
 const JiraApi = require('jira-client')
+const https = require('https')
 
 
 mongoose.connect('mongodb://localhost/nodekb')
@@ -57,7 +58,7 @@ app.use(flash());
 app.use((req, res, next) => {
   res.locals.messages = require('express-messages')(req, res)
   next()
-});
+})
 
 // Passport config
 require('./config/passport')(passport)
@@ -65,35 +66,43 @@ require('./config/passport')(passport)
 app.use(passport.initialize())
 app.use(passport.session())
 
+// Access Control
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  } else {
+    req.flash('danger', 'Please login')
+    res.redirect('/users/login')
+  }
+}
+
 app.get('*', async (req, res, next) => {
   res.locals.user = req.user || null
   next()
 })
 
 // Home Route
-app.get('/', (req, res) => {
-
-  Article.find({}, asyncMiddleware(async(err, articles) => {
-    if (err) console.log(err)
-    else {
-      // const result = await jira.searchJira('project=JRASERVER', {
-      //   startAt: '0',
-      //   maxResults: '10'
-      // })
-      // console.log(resuls.issues)
-      res.render('index', {
-        title: 'Articles',
-        articles: articles })
-    }
-  }))
+app.get('/', ensureAuthenticated, (req, res, next) => {
+  res.redirect('dashboard')
+  // const url = "https://jira.atlassian.com/rest/api/latest/search?JQL=project=JRASERVER"
+  // let data = https.get(url, (resp) => {
+  //   let data = ''
+  //   resp.on('data', (chunk) => { data += chunk })
+  //   resp.on('end', () => {
+  //       issues = JSON.parse(data).issues
+  //       Article.find({}, (err, articles) => {
+  //         if (err) console.log(err)
+  //         else res.render('index', { articles: articles, issues: issues })
+  //       })
+  //   }).on("error", (err) => { console.log("Error: " + err.message) })
+  // })
 })
 
-
 // Dashboard Route
-app.get('/dashboard', asyncMiddleware(async (req, res, next) => {
+app.get('/dashboard', ensureAuthenticated, asyncMiddleware(async (req, res, next) => {
   const result = await jira.searchJira('project=JRASERVER', {
     startAt: '0',
-    maxResults: '10'
+    maxResults: '100'
   })
   res.render('dashboard', { issues: result.issues })
 }))
