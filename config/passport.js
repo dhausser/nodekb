@@ -7,20 +7,20 @@ module.exports = (passport) => {
   // Local Strategy
   passport.use(new LocalStrategy((username,password, done) => {
     // Match username
-    const query = {username:username}
+    const query = { username: username }
     User.findOne(query, (err, user) => {
       if (err) throw err
       if (!user) {
-        done(null, false, {message: 'No user found'})
+        return done(null, false, {message: 'No user found'})
       }
 
       // Match Password
       bcrypt.compare(password, user.password, (err, isMatch) => {
         if (err) throw err
         if (isMatch) {
-          done(null, user)
+          return done(null, user)
         } else {
-          done(null, false, {message: 'Wrong password'})
+          return done(null, false, {message: 'Wrong password'})
         }
       })
     })
