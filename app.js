@@ -7,7 +7,6 @@ const session = require('express-session')
 const passport = require('passport')
 const config = require('./config/database')
 const JiraApi = require('jira-client')
-const https = require('https')
 
 
 mongoose.connect('mongodb://localhost/nodekb')
@@ -71,7 +70,7 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next()
   } else {
-    req.flash('danger', 'Please login')
+    // req.flash('danger', 'Please login')
     res.redirect('/users/login')
   }
 }
@@ -82,34 +81,18 @@ app.get('*', async (req, res, next) => {
 })
 
 // Home Route
-app.get('/', ensureAuthenticated, (req, res, next) => {
-  res.redirect('dashboard')
-  // const url = "https://jira.atlassian.com/rest/api/latest/search?JQL=project=JRASERVER"
-  // let data = https.get(url, (resp) => {
-  //   let data = ''
-  //   resp.on('data', (chunk) => { data += chunk })
-  //   resp.on('end', () => {
-  //       issues = JSON.parse(data).issues
-  //       Article.find({}, (err, articles) => {
-  //         if (err) console.log(err)
-  //         else res.render('index', { articles: articles, issues: issues })
-  //       })
-  //   }).on("error", (err) => { console.log("Error: " + err.message) })
-  // })
-})
-
-// Dashboard Route
-app.get('/dashboard', ensureAuthenticated, asyncMiddleware(async (req, res, next) => {
-  const result = await jira.searchJira('project=JRASERVER', {
-    startAt: '0',
-    maxResults: '100'
+app.get('/', ensureAuthenticated, asyncMiddleware(async (req, res, next) => {
+  const issues = await require('./lib/searchIssues').search()
+  Article.find({}, (err, articles) => {
+    if (err) console.log(err)
+    else res.render('index', { articles: articles, issues: issues })
   })
-  res.render('dashboard', { issues: result.issues })
 }))
 
 // Route filter
 app.use('/articles', require('./routes/articles'))
 app.use('/users', require('./routes/users'))
+app.use('/dashboard', require('./routes/dashboard'))
 
 // Start Server
 app.listen('3000', () => {
