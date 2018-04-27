@@ -8,6 +8,14 @@ const Article = require('../models/article')
 // Bring in Users
 const User = require('../models/user')
 
+// Get Route
+router.get('/', ensureAuthenticated, (req, res, next) => {
+  Article.find({}, (err, articles) => {
+    if (err) console.log(err)
+    else res.render('articles', { articles: articles })
+  })
+})
+
 // Add Route
 router.get('/add', ensureAuthenticated, (req, res) =>
   res.render('add_article', { title: 'Add Article' }))

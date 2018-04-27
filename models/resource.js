@@ -1,19 +1,63 @@
-const JiraApi = require('jira-client')
+const mongoose = require('mongoose')
 
-const jira = new JiraApi({
-  protocol: 'https',
-  host: 'jira.atlassian.com',
-  apiVersion: '2',
-  strictSSL: true
+// Resource Schema
+let resourceSchema = mongoose.Schema({
+  key: {
+    type: String,
+    required: true
+  },
+  firstName: {
+    type: String,
+    required: true
+  },
+  lastName: {
+    type: String,
+    required: true
+  },
+  fullName: {
+    type: String,
+    required: true
+  },
+  displayName: {
+    type: String,
+    required: true
+  },
+  team: {
+    type: String,
+    required: true
+  },
+  holiday: {
+    type: Number,
+    default: Number()
+  },
+  timeoriginalestimate: {
+    type: Number,
+    default: Number()
+  },
+  timeestimate: {
+    type: Number,
+    default: Number()
+  },
+  timespent: {
+    type: Number,
+    default: Number()
+  },
+  issues: {
+    type: Array,
+    default: Array()
+  },
+  issuesTimeEstimates: {
+    type: Array,
+    default: Array()
+  },
+  issuesTimeOriginalEstimates: {
+    type: Array,
+    default: Array()
+  },
+  issuesTimeSpent: {
+    type: Array,
+    default: Array()
+  }
 })
 
-const query = 'project=JRASERVER'
-
-const search = async (query) => {
-  const res = await jira.searchJira(query, {
-    startAt: '0',
-    maxResults: '5'
-  })
-}
-
-module.exports = search()
+module.exports = mongoose.model('Resource', resourceSchema)

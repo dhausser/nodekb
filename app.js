@@ -5,12 +5,14 @@ const bodyParser = require('body-parser')
 const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('passport')
-const config = require('./config/database')
+const ensureAuthenticated = require('./config/ensureAuth')
+const config = require('./config.json')
 const JiraApi = require('jira-client')
-
+const issue = require('./config/issue')
+// const config = require('./config/database')
 
 mongoose.connect('mongodb://localhost/nodekb')
-let db = mongoose.connection
+const db = mongoose.connection
 
 // Check connection
 db.once('open', () => console.log('Connected to MongoDB'))
@@ -22,15 +24,21 @@ db.on('error', (err) => console.log(err))
 const app = express()
 
 // Init Jira
-const jira = new JiraApi({
+const jiraClient = new JiraApi({
   protocol: 'https',
-  host: 'jira.atlassian.com',
+  host: config.host || 'jira.atlassian.com',
+  username: config.username || String(),
+  password: config.password || String(),
   apiVersion: '2',
   strictSSL: true
 })
 
+
 // Bring in Models
-let Article = require('./models/article')
+const Article = require('./models/article')
+const Resource = require('./models/resource')
+const Holiday = require('./models/holiday')
+const Feature = require('./models/feature')
 
 // Load View Engine
 app.set('views', path.join(__dirname, 'views'))
@@ -65,16 +73,6 @@ require('./config/passport')(passport)
 app.use(passport.initialize())
 app.use(passport.session())
 
-// Access Control
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next()
-  } else {
-    // req.flash('danger', 'Please login')
-    res.redirect('/users/login')
-  }
-}
-
 app.get('*', async (req, res, next) => {
   res.locals.user = req.user || null
   next()
@@ -82,11 +80,11 @@ app.get('*', async (req, res, next) => {
 
 // Home Route
 app.get('/', ensureAuthenticated, asyncMiddleware(async (req, res, next) => {
-  const issues = await require('./lib/searchIssues').search()
-  Article.find({}, (err, articles) => {
-    if (err) console.log(err)
-    else res.render('index', { articles: articles, issues: issues })
+  const issues = await issue.search({
+    jiraClient: jiraClient,
+    jql: config.jql
   })
+  res.render('index', { issues: issues })
 }))
 
 // Route filter

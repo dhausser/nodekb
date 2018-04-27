@@ -1,23 +1,24 @@
 extends layout
 
 block content
-    h2 #{title}
-    ul.list-group
-      each article, i in articles
-        li.list-group-item
-          a(href="/articles/"+article._id)= article.title
-    h2 Issues
-    .table-responsive.table-borderless.table-sm.table-hover
-      table
-        thead
+  canvas#myChart.my-4.w-100(width='900', height='380')
+  h2 Issues
+  .table-responsive.table-borderless.table-sm.table-hover
+    table
+      thead
+        tr
+          th Creator
+          th Key
+          th Summary
+          th Progress
+          th Total
+          
+      tbody
+        each issue, i in issues
           tr
-            th Key
-            th Summary
-            
-        tbody
-          each issue, i in issues
-            tr
-              td
-                a(href="#")= issue.key
-              td= issue.fields.summary
-              //- td= issue.fields.assignee.key
+            td
+              a(href="#")= issue.fields.creator.displayName
+            td= issue.key
+            td= issue.fields.summary
+            td= issue.fields.progress.progress
+            td= issue.fields.progress.total
